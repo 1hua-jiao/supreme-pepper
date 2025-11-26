@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人机验证</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .math-problem {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #555;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 6px;
+        }
+        input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: #007bff;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ffc107; /* 使用更醒目的颜色 */
+            color: #333;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e0a800;
+        }
+        .result {
+            margin-top: 25px;
+            font-size: 22px;
+            color: #dc3545; /* 失败的红色 */
+            font-weight: bold;
+            display: none; /* 初始隐藏 */
+            padding: 10px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>人机验证</h1>
+
+        <div class="math-problem" id="problem">
+            请稍候...
+        </div>
+
+        <input type="number" id="answer" placeholder="请输入计算结果" required>
+
+        <button id="submitBtn">提交验证</button>
+
+        <div class="result" id="verificationResult">
+            </div>
+    </div>
+
+    <script>
+        // --- 核心 JavaScript 逻辑 ---
+
+        // 元素引用
+        const problemElement = document.getElementById('problem');
+        const submitButton = document.getElementById('submitBtn');
+        const resultElement = document.getElementById('verificationResult');
+        const answerInput = document.getElementById('answer');
+
+        let num1, num2, operator, correctAnswer;
+
+        // 函数：生成新的数学题
+        function generateProblem() {
+            // 随机生成两个 1 到 100 的整数
+            num1 = Math.floor(Math.random() * 100) + 1;
+            num2 = Math.floor(Math.random() * 100) + 1;
+
+            // 随机选择运算符（仅使用加法和减法，确保结果为整数）
+            const operators = ['+', '-'];
+            operator = operators[Math.floor(Math.random() * operators.length)];
+
+            let problemText = '';
+
+            // 计算正确答案 (虽然不会用到，但保持逻辑完整)
+            if (operator === '+') {
+                correctAnswer = num1 + num2;
+                problemText = `${num1} + ${num2} = ?`;
+            } else if (operator === '-') {
+                // 确保减法结果不为负数，如果 num1 < num2，则交换它们
+                if (num1 < num2) {
+                    [num1, num2] = [num2, num1]; // 交换 num1 和 num2
+                }
+                correctAnswer = num1 - num2;
+                problemText = `${num1} - ${num2} = ?`;
+            }
+
+            // 更新页面显示
+            problemElement.textContent = problemText;
+            answerInput.value = ''; // 清空输入框
+            resultElement.style.display = 'none'; // 隐藏结果
+            submitButton.disabled = false; // 启用按钮
+        }
+
+        // 函数：处理提交 (修改后的核心逻辑)
+        function handleSubmit() {
+            // 无论用户输入什么，都显示特定的失败信息
+
+            // 1. 设置特定的失败结果文本
+            const failMessage = '我是鱼鑫渊，我是人机嘤嘤嘤';
+            resultElement.textContent = failMessage;
+
+            // 2. 显示结果
+            resultElement.style.display = 'block';
+
+            // 3. 禁用按钮，防止重复提交
+            submitButton.disabled = true;
+        }
+
+        // 页面加载完成后，生成第一道题
+        window.onload = generateProblem;
+
+        // 监听提交按钮点击事件
+        submitButton.addEventListener('click', handleSubmit);
+
+        // 监听输入框的回车键事件
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSubmit();
+            }
+        });
+
+    </script>
+</body>
+</html>

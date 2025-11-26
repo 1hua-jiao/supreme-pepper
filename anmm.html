@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给妈妈的爱心</title>
+    <style>
+        /* 1. 基础样式和布局 */
+        body {
+            /* 移除默认边距 */
+            margin: 0;
+            /* 填充整个视口 */
+            overflow: hidden;
+            /* 背景颜色 */
+            background-color: #fce4ec; /* 温柔的粉色 */
+            /* 确保页面高度和宽度填满 */
+            height: 100vh;
+            width: 100vw;
+            /* 相对定位，用于爱心绝对定位的容器 */
+            position: relative;
+        }
+
+        /* 2. 中央文字样式 */
+        .message-container {
+            /* 绝对定位到屏幕中央 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* 使用 transform 精确居中 */
+            transform: translate(-50%, -50%);
+            /* 确保文字在爱心之上 */
+            z-index: 100;
+            /* 文字样式 */
+            font-family: 'Arial Black', sans-serif;
+            font-size: 3em; /* 字体大小 */
+            color: #d81b60; /* 深粉色 */
+            text-align: center;
+            /* 文字阴影，使其更突出 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            /* 动画效果，让文字慢慢出现 */
+            animation: fadeIn 3s ease-in-out forwards;
+            opacity: 0; /* 初始隐藏 */
+        }
+
+        /* 文字淡入动画 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 3. 爱心样式 */
+        .heart {
+            /* 使用绝对定位，方便控制位置 */
+            position: absolute;
+            /* 爱心颜色 */
+            color: #ff80ab; /* 亮粉色 */
+            /* 字体大小，决定了爱心的大小 */
+            font-size: 20px;
+            /* 动画持续时间 */
+            animation: float 10s infinite linear;
+            /* 随机旋转，增加变化 */
+            transform: rotate(45deg); 
+            /* 降低透明度，让它看起来更轻盈 */
+            opacity: 0.8; 
+            /* 确保爱心在文字之下 */
+            z-index: 1; 
+            /* 禁止鼠标点击爱心 */
+            pointer-events: none;
+        }
+
+        /* 4. 爱心漂浮动画 */
+        @keyframes float {
+            0% { 
+                /* 初始位置：从底部开始 */
+                transform: translateY(100vh) scale(0.5); 
+                opacity: 0;
+            }
+            50% { 
+                /* 中间状态：向上漂浮，并稍微左右移动，大小随机变化 */
+                transform: translateY(50vh) translateX(50px) scale(1);
+                opacity: 0.9;
+            }
+            100% { 
+                /* 结束位置：飘出顶部 */
+                transform: translateY(-20vh) translateX(-50px) scale(0.8); 
+                opacity: 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="message-container">
+        早安妈妈，爱你哟
+    </div>
+
+    <script>
+        const body = document.body;
+        const numHearts = 30; // 想要生成的爱心数量
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            // 爱心符号
+            heart.innerHTML = '❤'; 
+
+            // 随机设置爱心的初始水平位置 (0% 到 100% 视口宽度)
+            heart.style.left = `${Math.random() * 100}vw`;
+
+            // 随机设置爱心的大小 (1.5em 到 3.5em)
+            const size = Math.random() * 2 + 1.5;
+            heart.style.fontSize = `${size}em`;
+
+            // 随机设置动画的持续时间和延迟，让爱心出现和漂浮更自然
+            heart.style.animationDuration = `${Math.random() * 5 + 8}s`; // 8到13秒
+            heart.style.animationDelay = `-${Math.random() * 10}s`; // 动画延迟，让它们看起来不是同时开始的
+
+            body.appendChild(heart);
+        }
+
+        // 循环创建指定数量的爱心
+        for (let i = 0; i < numHearts; i++) {
+            createHeart();
+        }
+
+        // 可以添加一个定时器，周期性地移除旧的爱心并创建新的，实现无限循环的效果
+        // setInterval(() => {
+        //     // 移除旧的，防止DOM元素过多
+        //     const hearts = document.querySelectorAll('.heart');
+        //     if (hearts.length > numHearts) {
+        //         hearts[0].remove();
+        //     }
+        //     createHeart();
+        // }, 500); // 每0.5秒生成一个新的爱心
+    </script>
+
+</body>
+</html>

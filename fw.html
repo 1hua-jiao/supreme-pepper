@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大学生高难度极限挑战</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .challenge-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 90%;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .math-problem {
+            font-size: 1.5em;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .math-problem span {
+            /* 模拟 LaTeX 公式显示 */
+            font-family: Georgia, serif;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1.2em;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 150px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result-display {
+            margin-top: 30px;
+        }
+        .feedback-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        /* 错误反馈文字样式 */
+        .error-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* 允许点击穿透 */
+            overflow: hidden;
+            z-index: 1000;
+        }
+        .error-text {
+            position: absolute;
+            font-size: 3em;
+            font-weight: bold;
+            color: rgba(255, 0, 0, 0.5); /* 半透明红色 */
+            white-space: nowrap;
+            user-select: none;
+            transition: transform 0s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="challenge-box">
+        <h2>🔥 泰勒公式求极限值</h2>
+        <p>（要求：使用泰勒公式计算。）</p>
+        
+        <div id="problem-text" class="math-problem">
+            $ \lim_{x \to 0} \frac{e^{x^2} - 1 - x^2}{\cos(x) - 1 + \frac{1}{2}x^2} $
+            <br><br>
+            <span id="random-info">（今日挑战难度系数: 0.<script>document.write(Math.floor(Math.random() * 90 + 10));</script>）</span>
+        </div>
+
+        <div>
+            <input type="text" id="answer-input" placeholder="输入答案">
+            <button onclick="checkAnswer()">提交答案</button>
+        </div>
+
+        <div id="result-display"></div>
+    </div>
+
+    <div id="error-overlay" class="error-overlay"></div>
+
+    <script>
+        // --- 常量定义：使用最终确认的正确答案 12 ---
+        const FINAL_CORRECT_ANSWER = 12; 
+        const EPSILON = 0.0001; // 容差
+        
+        // 随机错误文本库
+        const ERROR_MESSAGES = [
+            "肺雾", "这都不会做", "不知道你在学什么", 
+            "叫", "继续叫", "招笑", "哈哈哈", "嘁",
+            "呜呜呜", "人机", "that girl"
+        ];
+
+        // *** 已替换为您提供的 GitHub 原始图片链接 ***
+        const IMAGE_URL = "https://raw.githubusercontent.com/1hua-jiao/supreme-pepper/main/d7bf2e3c118de1da2da379d9a74665be.jpg"; 
+
+        // 确保页面加载时题目和常数正确对应
+        const FINAL_PROBLEM_LATEX = '$ \\lim_{x \\to 0} \\frac{e^{x^2} - 1 - x^2}{\\cos(x) - 1 + \\frac{1}{2}x^2} $';
+        document.getElementById('problem-text').innerHTML = FINAL_PROBLEM_LATEX + '<br><br>' + document.getElementById('random-info').outerHTML;
+        
+        
+        /**
+         * 检查用户输入的答案
+         */
+        function checkAnswer() {
+            const inputElement = document.getElementById('answer-input');
+            const resultDisplay = document.getElementById('result-display');
+            const errorOverlay = document.getElementById('error-overlay');
+            const userAnswer = inputElement.value.trim();
+            
+            resultDisplay.innerHTML = '';
+            errorOverlay.innerHTML = '';
+            document.body.style.overflow = 'auto';
+
+            if (userAnswer === "") {
+                alert("文本框空白提交无效！请输入答案。");
+                return;
+            }
+
+            const answerNumber = parseFloat(userAnswer);
+
+            if (!isNaN(answerNumber) && Math.abs(answerNumber - FINAL_CORRECT_ANSWER) < EPSILON) {
+                // --- 答案正确（12） ---
+                resultDisplay.innerHTML = `
+                    <p style="color: green; font-size: 1.5em;">嘁，做这么慢，**肺雾！**</p>
+                    <img src="${IMAGE_URL}" alt="正确反馈图片" class="feedback-image">
+                `;
+            } else {
+                // --- 答案错误 ---
+                resultDisplay.innerHTML = `
+                    <p style="color: red; font-size: 1.5em;">答案错误！</p>
+                    <img src="${IMAGE_URL}" alt="错误反馈图片" class="feedback-image">
+                `;
+                
+                document.body.style.overflow = 'hidden';
+                generateErrorText(errorOverlay);
+            }
+        }
+        
+        /**
+         * 在屏幕上随机生成错误文本
+         */
+        function generateErrorText(overlayElement) {
+            const maxTexts = 90; // 生成的文字数量
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            for (let i = 0; i < maxTexts; i++) {
+                const text = ERROR_MESSAGES[Math.floor(Math.random() * ERROR_MESSAGES.length)];
+                const textElement = document.createElement('div');
+                textElement.className = 'error-text';
+                textElement.textContent = text;
+                
+                // 随机位置
+                const left = Math.random() * screenWidth;
+                const top = Math.random() * screenHeight;
+                
+                // 随机大小和旋转
+                const size = Math.floor(Math.random() * 20 + 20); // 20px 到 40px
+                const rotation = Math.floor(Math.random() * 60); // 0 到 60 度
+                
+                textElement.style.left = `${left}px`;
+                textElement.style.top = `${top}px`;
+                textElement.style.fontSize = `${size}px`;
+                textElement.style.transform = `rotate(${rotation}deg)`;
+                
+                overlayElement.appendChild(textElement);
+            }
+        }
+        
+        // 确保页面加载时没有错误文本
+        window.onload = function() {
+            document.getElementById('error-overlay').innerHTML = '';
+        };
+
+    </script>
+
+</body>
+</html>

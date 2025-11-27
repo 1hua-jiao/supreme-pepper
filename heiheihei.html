@@ -1,0 +1,317 @@
+<!-- 石威，你又来偷看了，啧啧啧 -->
+<!-- 石威，你又来偷看了，啧啧啧 -->
+<!-- 石威，你又来偷看了，啧啧啧 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片与视频展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        .header {
+            background-color: #333;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        .header button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #555;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .header button.active {
+            background-color: #007bff;
+        }
+        
+        .header button:hover:not(.active) {
+            background-color: #777;
+        }
+        
+        .content-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .media-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background-color: #fff;
+            aspect-ratio: 3/4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9f9f9;
+        }
+        
+        .media-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .content-area {
+            display: none;
+        }
+        
+        #normal-content {
+            display: block;
+        }
+
+        /* 加载状态提示 */
+        .loading {
+            color: #666;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-message {
+            color: #ff4444;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <button id="normal-btn" class="active" onclick="showContent('normal')">普通区</button>
+        <button id="featured-btn" onclick="showContent('featured')">劲爆区</button>
+    </div>
+
+    <div class="content-container">
+        
+        <div id="normal-content" class="content-area">
+            <h2>⭐ 普通区</h2>
+            <p>嘘</p>
+            <div id="normal-grid" class="media-grid">
+                <div class="loading">正在加载普通区内容...</div>
+            </div>
+        </div>
+
+        <div id="featured-content" class="content-area">
+            <h2>✨ 劲爆区</h2>
+            <p>嘘</p>
+            <div id="featured-grid" class="media-grid">
+                <div class="loading">正在加载劲爆区内容...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 媒体资源配置
+        const mediaConfig = {
+            normal: {
+                images: [
+                    '0240152d4a1fdc07ff3d150e008dcd94.jpg',
+                    '06738a9a0ff486b6fb4ba013a1e0a93a.jpg',
+                    '086a17e904c22453119a71d575da255c.jpg',
+                    '0beaf3cfe31082e67ad1699807e77612.jpg',
+                    '64b23e07c834b15f5da013712e93b637.jpg',
+                    '164f351e6d378804420a4ea7d6df759e.jpg',
+                    '1e52043366d03322f3d6fffbc6802d30.jpg',
+                    '4193bf852eff3f8c5adbb7d6edad8a10.jpg',
+                    '44ac4044fc6f09587906288ee0ee9ff3.jpg',
+                    '47bdf2d3d645f268482c68c7c8f470a0.jpg',
+                    '4d95c8d6e25f893f24d757b809c9fb22.jpg',
+                    '6122b4df319a401a6b18dddc5a923db.jpg',
+                    '64efcc177d70316711f1b7d2a51d7a8a.jpg',
+                    '969ddec025c22d7ae37481abff2fb460.jpg',
+                    '972a7c219903cde4d8a4571fe241c340.jpg',
+                    'b4bcafc4895aa4c66057ffb839ee8a67.jpg',
+                    'bb3db4ca2af7c5bf3f41323cb6fe7636.jpg',
+                    'c1032fe6b1c397c9d67c452fea34cde.jpg',
+                    'e86fa1acfa4cb66376ec4593e47b823a.jpg',
+                    'ee15c499cf487095191327cde8114055.jpg',
+                    'f2c28e9c264676ea6810d2c60e8e4821.jpg',
+                    'f4096dbc653a8cd215509b6ca8abaadf.jpg'
+                ],
+                videos: [
+                    '0c9e030fc9e20cd1b37ff03c6f0ae0ee.mp4',
+                    '2577a2437fffd2b195d51ecd3cbb12a8.mp4',
+                    '5a6a0186a086a234bcd00c01cb4bd600.mp4',
+                    'f797f890da188f144a8e90b3f2299ad5.mp4'
+                ],
+                baseUrl: 'https://1hua-jiao.github.io/girl/'
+            },
+            featured: {
+                images: [
+                    '04bba0472eaf4aeba278ff643b1086a4.jpg',
+                    '1d03043efbd8bb85711f996640877f94.jpg',
+                    '1e942abc848f7fa99a24485d14adca8f.jpg',
+                    '38deed2cd2636f5d12abe1aad3508213.jpg',
+                    '4b4361f504ead2d8b666241540354204.jpg',
+                    '5986cfc681319c51e3aa6f7121920ea4.jpg',
+                    '7a039ea54a5a55fc19911b2fbaa1a1b1.jpg',
+                    '8467785f52ca3d93abfd7a93f9b82e30.jpg',
+                    '85817d5d536e5047b64940757cfb2840.jpg',
+                    '894866e6d3b019ec6cc5b0f854d51c34.jpg',
+                    '9d770cf45c62fa52d88a799a044482b2.jpg',
+                    'a000d4ae25dbad1af115595cc39aaf7d.jpg',
+                    'aafd8c30fa2e6f129c26c75de4085b9e.jpg',
+                    'ae9d95cfdb7d4933037f7d29ebfd6cdc.jpg',
+                    'b2474f173a8a07aa3130a8810bc67db6.jpg',
+                    'c41e73f5f291b18b50a0404781c1a417.jpg',
+                    'cf4ba2cd38752ce6f89542661a2e6fee.jpg',
+                    'de198d16b6e573d4774a36b68209b3e5.jpg',
+                    'f9b6e70f0d0e68e436d0438046b105e3.jpg',
+                    'ff7c1b036152f57998089f5056b75750.jpg'
+                ],
+                videos: [
+                    '47097a5d81ee7e7e95793c1ff71fee2d.mp4'
+                ],
+                baseUrl: 'https://1hua-jiao.github.io/lieqi/'
+            }
+        };
+
+        // 创建媒体项
+        function createMediaItem(url, type) {
+            const item = document.createElement('div');
+            item.className = 'media-item';
+            
+            if (type === 'image') {
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = '图片';
+                img.onerror = function() {
+                    item.style.display = 'none';
+                    console.log('加载失败:', url);
+                };
+                item.appendChild(img);
+            } else if (type === 'video') {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.muted = true;
+                
+                const source = document.createElement('source');
+                source.src = url;
+                source.type = 'video/mp4';
+                
+                video.appendChild(source);
+                video.appendChild(document.createTextNode('您的浏览器不支持视频播放。'));
+                
+                video.onerror = function() {
+                    item.style.display = 'none';
+                    console.log('视频加载失败:', url);
+                };
+                
+                item.appendChild(video);
+            }
+            
+            return item;
+        }
+
+        // 加载媒体内容
+        function loadMediaContent() {
+            Object.keys(mediaConfig).forEach(area => {
+                const config = mediaConfig[area];
+                const grid = document.getElementById(`${area}-grid`);
+                
+                // 清空加载提示
+                grid.innerHTML = '';
+                
+                let loadedCount = 0;
+                const totalCount = config.images.length + config.videos.length;
+                
+                // 加载图片
+                config.images.forEach(filename => {
+                    const url = config.baseUrl + filename;
+                    const item = createMediaItem(url, 'image');
+                    grid.appendChild(item);
+                });
+                
+                // 加载视频
+                config.videos.forEach(filename => {
+                    const url = config.baseUrl + filename;
+                    const item = createMediaItem(url, 'video');
+                    grid.appendChild(item);
+                });
+                
+                // 如果没有内容显示提示
+                setTimeout(() => {
+                    const visibleItems = grid.querySelectorAll('.media-item:not([style*="display: none"])');
+                    if (visibleItems.length === 0) {
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'error-message';
+                        errorMsg.innerHTML = `
+                            <p>没有找到可显示的内容</p>
+                            <p>请检查：</p>
+                            <p>1. 文件是否上传到正确的GitHub仓库</p>
+                            <p>2. 文件名和后缀是否正确</p>
+                            <p>3. 打开浏览器控制台查看具体错误</p>
+                        `;
+                        grid.appendChild(errorMsg);
+                    }
+                }, 5000);
+            });
+        }
+
+        // 切换内容显示
+        function showContent(area) {
+            const contents = document.querySelectorAll('.content-area');
+            const buttons = document.querySelectorAll('.header button');
+            
+            contents.forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            if (area === 'normal') {
+                document.getElementById('normal-content').style.display = 'block';
+                document.getElementById('normal-btn').classList.add('active');
+            } else if (area === 'featured') {
+                document.getElementById('featured-content').style.display = 'block';
+                document.getElementById('featured-btn').classList.add('active');
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMediaContent();
+            
+            // 测试链接可用性
+            setTimeout(() => {
+                console.log('测试普通区第一个图片链接:', mediaConfig.normal.baseUrl + mediaConfig.normal.images[0]);
+                console.log('测试劲爆区第一个图片链接:', mediaConfig.featured.baseUrl + mediaConfig.featured.images[0]);
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
